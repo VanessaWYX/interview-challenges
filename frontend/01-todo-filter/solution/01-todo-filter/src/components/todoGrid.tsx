@@ -25,20 +25,20 @@ const ToDoGrid = (): React.ReactNode => {
         todoItems.push(newItem);
         setItems(todoItems);
         localStorage.setItem('todoItems', JSON.stringify(todoItems));
-    }, [setItems]); 
+    }, [setItems]);
 
     const handleSubmit = useCallback((event: React.SubmitEvent<HTMLFormElement>): void => {
         event.preventDefault();
         const inputElement = event.currentTarget;
-            const newItem = inputElement.value.trim();
-            if (newItem) {
-                saveToLocalStorage(newItem);
-                inputElement.value = ''; // Clear the input field
-            }
+        const newItem = inputElement.value.trim();
+        if (newItem) {
+            saveToLocalStorage(newItem);
+            inputElement.value = ''; // Clear the input field
+        }
     }, [saveToLocalStorage]);
 
     const onKeyEnter = useCallback((event: React.KeyboardEvent<HTMLInputElement>): void => {
-        if(event.key === 'Enter') {
+        if (event.key === 'Enter') {
             event.preventDefault();
             const inputElement = event.currentTarget;
             const newItem = inputElement.value.trim();
@@ -60,40 +60,48 @@ const ToDoGrid = (): React.ReactNode => {
         }
     }, []);
 
-    return(
-    <>
-        <section id="todogrid">
-            <form onSubmit={handleSubmit}>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>
-                                To Do Items
-                            </th>
-                            <th>
-                                Actions
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>
-                                <input type="text" id="item1" name="item1" placeholder="Enter item" onKeyDown={onKeyEnter}/>
-                            </td>
-                        </tr>
-                       <ItemsList items={items} setItems={setItems} />
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <td>
-                                {items.filter(item => !item.completed).length} item(s) left
-                            </td>
-                        </tr>
-                    </tfoot>
-                </table>
-            </form>
-        </section>
-    </>);
+    return (
+        <>
+            <section id="todogrid">
+                <>
+                    {items.filter(i => i.completed).length > 1 &&
+                        <button onClick={() => {
+                            const updatedItems = items.filter(i => !i.completed);
+                            setItems(updatedItems);
+                            localStorage.setItem('todoItems', JSON.stringify(updatedItems));
+                        }}>Clear Completed</button>}
+                </>
+                <form onSubmit={handleSubmit}>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>
+                                    To Do Items
+                                </th>
+                                <th>
+                                    Actions
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <input type="text" id="item1" name="item1" placeholder="Enter item" onKeyDown={onKeyEnter} />
+                                </td>
+                            </tr>
+                            <ItemsList items={items} setItems={setItems} />
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td>
+                                    {items.filter(item => !item.completed).length} item(s) left
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </form>
+            </section>
+        </>);
 }
 
 export default ToDoGrid;
