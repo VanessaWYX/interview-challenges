@@ -7,8 +7,7 @@ type ItemsListProps = {
 };
 
 const ItemsList = ({ items, setItems }: ItemsListProps): React.ReactNode => {
-
-    const handleItemChecked = (e: React.ChangeEvent<HTMLInputElement, HTMLInputElement>, itemId: string): void => {
+    const handleItemChecked = (e: React.ChangeEvent<HTMLInputElement>, itemId: string): void => {
         e.stopPropagation();
         const updatedItems = items.map(i => {
             if (i.id === itemId) {
@@ -39,7 +38,6 @@ const ItemsList = ({ items, setItems }: ItemsListProps): React.ReactNode => {
                     </td>
                 </tr>
             ))}
-
         </>);
 }
 

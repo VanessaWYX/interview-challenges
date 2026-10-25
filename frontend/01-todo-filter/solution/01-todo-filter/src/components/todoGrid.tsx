@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
+import ItemsList from "./itemsList";
 
 export type ToDoItem = {
     id: string;
@@ -10,7 +11,7 @@ export type ToDoItem = {
 const ToDoGrid = (): React.ReactNode => {
     const [items, setItems] = useState<ToDoItem[]>([]);
 
-    function saveToLocalStorage(value: string): void {
+    const saveToLocalStorage = useCallback((value: string): void => {
         const itemId = crypto.randomUUID();
         const newItem: ToDoItem = {
             id: itemId,
@@ -24,9 +25,9 @@ const ToDoGrid = (): React.ReactNode => {
         todoItems.push(newItem);
         setItems(todoItems);
         localStorage.setItem('todoItems', JSON.stringify(todoItems));
-    }
+    }, [setItems]); 
 
-    function handleSubmit(event: React.SubmitEvent<HTMLFormElement>): void {
+    const handleSubmit = useCallback((event: React.SubmitEvent<HTMLFormElement>): void => {
         event.preventDefault();
         const inputElement = event.currentTarget;
             const newItem = inputElement.value.trim();
@@ -34,9 +35,9 @@ const ToDoGrid = (): React.ReactNode => {
                 saveToLocalStorage(newItem);
                 inputElement.value = ''; // Clear the input field
             }
-    }
+    }, [saveToLocalStorage]);
 
-    function onKeyEnter(event: React.KeyboardEvent<HTMLInputElement>): void {
+    const onKeyEnter = useCallback((event: React.KeyboardEvent<HTMLInputElement>): void => {
         if(event.key === 'Enter') {
             event.preventDefault();
             const inputElement = event.currentTarget;
@@ -48,7 +49,7 @@ const ToDoGrid = (): React.ReactNode => {
                 inputElement.value = ''; // Clear the input field
             }
         }
-    }
+    }, [saveToLocalStorage]);
 
     useEffect(() => {
         const existingItems = localStorage.getItem('todoItems');
