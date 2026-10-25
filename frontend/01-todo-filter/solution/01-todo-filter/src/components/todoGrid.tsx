@@ -82,6 +82,26 @@ const ToDoGrid = (): React.ReactNode => {
                         {items.sort((a, b) => a.createdTimestamp.localeCompare(b.createdTimestamp)).map((item) => (
                             <tr key={item.id}>
                                 <td>{item.text}</td>
+                                <td>
+                                    <input type="checkbox" id={`checkbox-${item.id}`} checked={item.completed} onChange={(e) => {
+                                        e.stopPropagation();
+                                        const updatedItems = items.map(i => {
+                                            if (i.id === item.id) {
+                                                return { ...i, completed: !i.completed };
+                                            }
+                                            return i;
+                                        });
+                                        setItems(updatedItems);
+                                        localStorage.setItem('todoItems', JSON.stringify(updatedItems));
+                                    }} />
+                                </td>
+                                <td>
+                                    <button onClick={() => {
+                                        const updatedItems = items.filter(i => i.id !== item.id);
+                                        setItems(updatedItems);
+                                        localStorage.setItem('todoItems', JSON.stringify(updatedItems));
+                                    }}>Delete</button>
+                                </td>
                             </tr>
                         ))}
                     </tbody>
