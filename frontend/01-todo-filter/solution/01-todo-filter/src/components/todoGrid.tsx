@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 type ToDoItem = {
     id: string;
@@ -7,7 +7,8 @@ type ToDoItem = {
     createdTimestamp: string;
 };
 
-const ToDoGrid = () => {
+const ToDoGrid = (): React.ReactNode => {
+    const [items, setItems] = useState<ToDoItem[]>([]);
 
     function saveToLocalStorage(value: string): void {
         const itemId = crypto.randomUUID();
@@ -48,6 +49,15 @@ const ToDoGrid = () => {
         }
     }
 
+    useEffect(() => {
+        const existingItems = localStorage.getItem('todoItems');
+        if (existingItems) {
+            const todoItems: ToDoItem[] = JSON.parse(existingItems);
+            console.log('Existing items from localStorage:', todoItems);
+            setItems(todoItems);
+        }
+    }, []);
+
     return(
     <>
         <section id="todogrid">
@@ -69,6 +79,11 @@ const ToDoGrid = () => {
                                 <input type="text" id="item1" name="item1" placeholder="Enter item" onKeyDown={onKeyEnter}/>
                             </td>
                         </tr>
+                        {items.sort((a, b) => a.createdTimestamp.localeCompare(b.createdTimestamp)).map((item) => (
+                            <tr key={item.id}>
+                                <td>{item.text}</td>
+                            </tr>
+                        ))}
                     </tbody>
                 </table>
             </form>
