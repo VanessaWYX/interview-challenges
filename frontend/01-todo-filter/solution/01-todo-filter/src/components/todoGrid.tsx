@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-type ToDoItem = {
+export type ToDoItem = {
     id: string;
     text: string;
     completed: boolean;
@@ -22,6 +22,7 @@ const ToDoGrid = (): React.ReactNode => {
         const existingItems = localStorage.getItem('todoItems');
         const todoItems: ToDoItem[] = existingItems ? JSON.parse(existingItems) : [];
         todoItems.push(newItem);
+        setItems(todoItems);
         localStorage.setItem('todoItems', JSON.stringify(todoItems));
     }
 
@@ -79,31 +80,7 @@ const ToDoGrid = (): React.ReactNode => {
                                 <input type="text" id="item1" name="item1" placeholder="Enter item" onKeyDown={onKeyEnter}/>
                             </td>
                         </tr>
-                        {items.sort((a, b) => a.createdTimestamp.localeCompare(b.createdTimestamp)).map((item) => (
-                            <tr key={item.id}>
-                                <td>{item.text}</td>
-                                <td>
-                                    <input type="checkbox" id={`checkbox-${item.id}`} checked={item.completed} onChange={(e) => {
-                                        e.stopPropagation();
-                                        const updatedItems = items.map(i => {
-                                            if (i.id === item.id) {
-                                                return { ...i, completed: !i.completed };
-                                            }
-                                            return i;
-                                        });
-                                        setItems(updatedItems);
-                                        localStorage.setItem('todoItems', JSON.stringify(updatedItems));
-                                    }} />
-                                </td>
-                                <td>
-                                    <button onClick={() => {
-                                        const updatedItems = items.filter(i => i.id !== item.id);
-                                        setItems(updatedItems);
-                                        localStorage.setItem('todoItems', JSON.stringify(updatedItems));
-                                    }}>Delete</button>
-                                </td>
-                            </tr>
-                        ))}
+                       <ItemsList items={items} setItems={setItems} />
                     </tbody>
                 </table>
             </form>
