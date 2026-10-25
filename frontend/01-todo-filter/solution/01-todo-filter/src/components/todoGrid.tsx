@@ -83,6 +83,13 @@ const ToDoGrid = (): React.ReactNode => {
                         </tr>
                        <ItemsList items={items} setItems={setItems} />
                     </tbody>
+                    <tfoot>
+                        <tr>
+                            <td>
+                                {items.filter(item => !item.completed).length} item(s) left
+                            </td>
+                        </tr>
+                    </tfoot>
                 </table>
             </form>
         </section>
